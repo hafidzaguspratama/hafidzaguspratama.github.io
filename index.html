@@ -266,23 +266,33 @@
         </div>
         <div class="row justify-content-center">
           <div class="col-md-6">
-            <form>
+            <!-- Alert -->
+            <div class="alert alert-success alert-dismissible fade show d-none alertme" role="alert">
+              <strong>Halloo...</strong> Terimakasih Pesan Kamu Sudah Di Terima
+              <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+            <!-- Akhir  Alert -->
+            <form name="hap-contact-form">
               <div class="mb-3">
                 <label for="name" class="form-label">Name</label>
-                <input type="name" class="form-control" id="name" aria-describedby="name" />
+                <input type="name" class="form-control" id="name" aria-describedby="name" name="nama" />
               </div>
 
               <div class="mb-3">
                 <label for="email" class="form-label">Email</label>
-                <input type="Email" class="form-control" id="Email" aria-describedby="Email" />
+                <input type="Email" class="form-control" id="Email" aria-describedby="Email" name="email" />
               </div>
 
               <div class="mb-3">
                 <label for="exampleFormControlTextarea1" class="form-label">Pesan</label>
-                <textarea class="form-control" id="exampleFormControlTextarea1" rows="4"></textarea>
+                <textarea class="form-control" id="exampleFormControlTextarea1" rows="4" name="pesan"></textarea>
               </div>
 
-              <button type="submit" class="btn btn-primary">Kirim</button>
+              <button type="submit" class="btn btn-success btn-kirim">Kirim</button>
+              <button class="btn btn-success btn-loading d-none" type="button" disabled>
+                <span class="spinner-grow spinner-grow-sm" role="status" aria-hidden="true"></span>
+                Loading...
+              </button>
             </form>
           </div>
         </div>
@@ -303,9 +313,35 @@
     </footer>
     <!-- Akhir Footer -->
 
-    <!-- Optional JavaScript; choose one of the two! -->
-
     <!-- Option 1: Bootstrap Bundle with Popper -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p" crossorigin="anonymous"></script>
+
+    <script>
+      const scriptURL = "https://script.google.com/macros/s/AKfycbyLGkidYRECn8_ZRhMu58nWec7Vo1bG-BnGsOwpZxc0p1HHOYnRqK5G3pOOXVkcjWplTA/exec";
+      const form = document.forms["hap-contact-form"];
+      const btnKirim = document.querySelector(".btn-kirim");
+      const btnLoading = document.querySelector(".btn-loading");
+      const alertMe = document.querySelector(".alertme");
+
+      form.addEventListener("submit", (e) => {
+        e.preventDefault();
+        // Btn Kirim Hilang Menjadi Btn Loading
+        btnLoading.classList.toggle("d-none");
+        btnKirim.classList.toggle("d-none");
+        fetch(scriptURL, { method: "POST", body: new FormData(form) })
+          .then((response) => {
+            // Btn Loading Hilang Menjadi Btn Kirim
+            btnLoading.classList.toggle("d-none");
+            btnKirim.classList.toggle("d-none");
+            // Alert Muncul
+            alertMe.classList.toggle("d-none");
+            // Reset
+            form.reset();
+
+            console.log("Success!", response);
+          })
+          .catch((error) => console.error("Error!", error.message));
+      });
+    </script>
   </body>
 </html>
